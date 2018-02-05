@@ -12,6 +12,7 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 configFile = "591.config"
 outputFile = "items.json"
 dbFile = "db.json"
+max_db_size = 200
 
 def saveFile(filename, content):
     fp = codecs.open(filename, 'w+', 'utf-8')
@@ -74,7 +75,7 @@ for index, config in configs.items():
         
         link = domain + uri + queryParams[:-1]
         res = getJsonURL(link)
-        count = int(res['count'])
+        count = int(res['count'].replace(',', ''))
         
         if not count or count <= 0 or not res['main']:
             continue
@@ -95,6 +96,9 @@ for index, config in configs.items():
             items += getItems(BeautifulSoup(main, 'lxml'))
 
     output[index] = items
+
+while len(db) > max_db_size:
+    db.remove(db[0])
 
 saveFile(outputFile, json.dumps(output))
 saveFile(dbFile, json.dumps(db))

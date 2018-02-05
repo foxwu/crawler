@@ -102,6 +102,6 @@ for config in configs:
             if data:
                 datum += data
     output['latest'] = latest
-    output['data'] = datum
+    output['data'] = datum[::-1]
     saveJsonFile(config['output'], output)
 
